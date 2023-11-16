@@ -20,8 +20,8 @@ def check_public_access():
         # Flag to track if any bucket with public access is found
         public_access_found = False
 
-        # List to store bucket names with public access
-        buckets_with_public_access = []
+        # List to store bucket names without public access
+        buckets_without_public_access = []
 
         # Iterate through each bucket and check for public access
         for bucket in buckets:
@@ -62,20 +62,20 @@ def check_public_access():
                 else:
                     raise
 
-            # If public access is detected, add the bucket name to the list
-            if any([public_policy_access, public_acl_access, block_public_acls, ignore_public_acls, block_public_policy, restrict_public_buckets]):
-                buckets_with_public_access.append(bucket_name)
+            # If public access is not detected, add the bucket name to the list
+            if not any([public_policy_access, public_acl_access, block_public_acls, ignore_public_acls, block_public_policy, restrict_public_buckets]):
+                buckets_without_public_access.append(bucket_name)
 
             # Print progress in the console
             print(f"Progress: {progress_counter}/{total_buckets}", end='\r')
             progress_counter += 1
 
-        # If no buckets with public access are detected
-        if not buckets_with_public_access:
-            print("\nNo buckets with public access found.")
+        # If no public access is detected in any bucket
+        if not buckets_without_public_access:
+            print("\nNo buckets without public access found.")
         else:
-            print("\nBuckets with public access:")
-            for bucket_name in buckets_with_public_access:
+            print("\nBuckets without public access:")
+            for bucket_name in buckets_without_public_access:
                 print(f" - {bucket_name}")
 
     except Exception as e:
